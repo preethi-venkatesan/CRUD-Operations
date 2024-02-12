@@ -77,20 +77,25 @@ class MainActivity : AppCompatActivity() {
 
     private suspend fun displayData(student: Student) {
 
-        withContext(Dispatchers.Main) {
+        if (student != null) {
 
-            println("TAG student first name" + student.firstName)
+            withContext(Dispatchers.Main) {
 
-            // to set the data to textview from the table
-            binding.tvFirstName.text = student.firstName
-            binding.tvLastName.text = student.lastName
-            binding.tvRollNo.text = student.rollNo.toString()
+                println("TAG student first name" + student.firstName)
 
-            // to change visibility of textviews
-            binding.tvFirstName.visibility = View.VISIBLE
-            binding.tvLastName.visibility = View.VISIBLE
-            binding.tvRollNo.visibility = View.VISIBLE
+                // to set the data to textview from the table
+                binding.tvFirstName.text = student.firstName
+                binding.tvLastName.text = student.lastName
+                binding.tvRollNo.text = student.rollNo.toString()
 
+                // to change visibility of textviews
+                binding.tvFirstName.visibility = View.VISIBLE
+                binding.tvLastName.visibility = View.VISIBLE
+                binding.tvRollNo.visibility = View.VISIBLE
+
+            }
+        } else {
+            Toast.makeText(this, "No data for this roll number", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -110,9 +115,9 @@ class MainActivity : AppCompatActivity() {
 
             GlobalScope.launch(Dispatchers.IO) {
 
-                student = appDb.studentDao().findByRoll(rollNo.toInt())
+                student = appDb.studentDao().findByRoll(rollNo.toInt()) ?: return@launch
                 println("TAG Student Detail: " + student.toString())
-                displayData(student)
+                    displayData(student)
             }
 
 
